@@ -11,15 +11,15 @@ I use it all of the time, so it's fairly stable :)
 3. Get your OAuth details by pressing "Explore API" and copy them by pressing "Show keys" at the top of the page
 4. Copy them into a file that looks like this:
        
-       <?php
-       // my configuration
-       $consumerKey = 'my consumer key';
-       $consumerSecret = 'my consumer secret';
-       $token = 'my token';
-       $tokenSecret = 'my token secret';
+         <?php
+         // my configuration
+         $consumerKey = 'my consumer key';
+         $consumerSecret = 'my consumer secret';
+         $token = 'my token';
+         $tokenSecret = 'my token secret';
 
-       define('DEBUG', false);
-       define('OFFICIAL_API', true);
+         define('DEBUG', false);
+         define('OFFICIAL_API', true);
    
    and save the file as `config.php`
 5. Run `bower install` and `php composer.phar install` to install all of the libraries
