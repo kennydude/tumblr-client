@@ -5,7 +5,7 @@ require 'common.php';
 
 $myblogs = get_my_blog_names();
 $blog = $_GET['blog'];
-var_dump($blog);
+$this_blog = $blog;
 
 if(!$_GET['action']){
 	$_GET['action'] = "posts";
@@ -16,6 +16,11 @@ function blog_header(){
 	$actions = array("posts", "text", "photos", "quotes", "links", "chats", "audio", "videos", "answers");
 	if(OFFICIAL_API == true && in_array($blog, $myblogs)){
 		$actions[] = "notes";
+	}
+	if(in_array($blog, $myblogs)){
+		$actions[] = "queue";
+		$actions[] = "drafts";
+		$actions[] = "submissions";
 	}
 
 	if(!$bloginfo){
@@ -78,6 +83,9 @@ switch($_GET['action']){
 	case "answers":
 		$_GET['type'] = $_GET['action']; // no break
 	case "posts":
+	case "queue":
+	case "drafts":
+	case "submissions":
 		$opts = array(
 			'reblog_info' => 'true'
 		);
@@ -96,7 +104,20 @@ switch($_GET['action']){
 			$ex .= "&type=" . $_GET['type'];
 		}
 
-		$dashboard = $client->getBlogPosts($blog, $opts);
+		switch ($_GET['action']) {
+			case 'posts':
+				$dashboard = $client->getBlogPosts($blog, $opts);
+				break;
+			case 'queue':
+				$dashboard = $client->getQueuedPosts($blog, $opts);
+				break;
+			case 'drafts':
+				$dashboard = $client->getDraftPosts($blog, $opts);
+				break;
+			case 'submissions':
+				$dashboard = $client->getSubmissionPosts($blog, $opts);
+				break;
+		}
 		$bloginfo = $dashboard->blog;
 		$dashboard = $dashboard->posts;
 

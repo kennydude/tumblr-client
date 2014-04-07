@@ -64,6 +64,7 @@
 		}
 		.panel-body{
 			word-wrap: break-word;
+			word-break: break-all;
 		}
 		<?php if(!defined("NOHEADER")){ ?>
 		.mainBody{
@@ -87,6 +88,11 @@
 		body .sp{
 			padding-left: 6px;
 			padding-right: 6px;
+		}
+		.body-postcard .body{
+			white-space: pre;
+			overflow-x: scroll;
+			font-size: 20px;
 		}
 	</style>
 </head>

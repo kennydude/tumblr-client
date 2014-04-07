@@ -2,9 +2,41 @@
 // POST THEME
 $myblogs = get_my_blog_names();
 
+if(!function_exists('post_set_vars')){
+	function post_set_vars(){
+		global $avatar, $post;
+		$avatar = 'http://api.tumblr.com/v2/blog/'.$post->blog_name. '.tumblr.com/avatar/48';
+		if($post->asking_url == NULL){ // anon
+			$avatar = "http://placekitten.com/g/48/48";
+		}
+	}
+}
+
 if(!$post->reblogged_root_url){
 	$post->reblogged_root_url = $post->post_url;
 }
+$posted_verb = 'posted';
+$avatar = 'http://api.tumblr.com/v2/blog/'.$post->blog_name. '.tumblr.com/avatar/48';
+
+if($post->type == "postcard"){
+	$posted_verb = 'sent you fanmail';
+} else if($post->type == "answer" && $post->state == "submission"){
+	$posted_verb = 'asked';
+	post_set_vars();
+}
+
+if($post->state == "submission" && ($post->type == "answer" || $post->type == "postcard")){ // ask
+	if($post->answer != ""){
+		$bn =  $post->blog_name;
+		$post->blog_name = $post->asking_name;
+		$posted_verb = 'replied to your ask';
+		$post->asking_name = $bn;
+	} else{
+		$post->blog_name = $post->asking_name;
+	}
+	post_set_vars();
+}
+
 ?>
 <div class="panel <?php
 if(in_array($post->blog_name, $myblogs)){
@@ -17,7 +49,7 @@ if(in_array($post->blog_name, $myblogs)){
 	<div class="panel-heading">
 		<div class="row">
 			<div class="col-md-1 sp">
-				<img src="http://api.tumblr.com/v2/blog/<?php echo $post->blog_name; ?>.tumblr.com/avatar/48" />
+				<img src="<?php echo $avatar; ?>" />
 			</div>
 			<div class="col-md-9 sp cnt">
 				<?php
@@ -29,7 +61,10 @@ if(in_array($post->blog_name, $myblogs)){
 							echo ' <span class="label label-default">THAT\'S YOU</span>';
 						}
 					} else{
-						echo ' <a href="post.php?id='. $post->id . '&name=' . $post->blog_name . '">posted</a>';
+						echo ' <a href="post.php?id='. $post->id . '&name=' . $post->blog_name . '">'.$posted_verb.'</a>';
+					}
+					if($post->scheduled_publish_time){
+						echo ' <span class="timeago" data-timestamp="'.$post->scheduled_publish_time.'">... ago</span> and was queued ';
 					}
 				?> <span class="timeago" data-timestamp="<?php echo $post->timestamp; ?>">... ago</span>
 			</div>
@@ -70,7 +105,7 @@ if(in_array($post->blog_name, $myblogs)){
 			</div>
 		</div>
 	</div>
-	<div class="panel-body">
+	<div class="panel-body body-<?php echo $post->type; ?>">
 		<?php
 			$no_body = false;
 
@@ -112,9 +147,10 @@ if(in_array($post->blog_name, $myblogs)){
 				?>
 				<p class="bg-info pad10"><?php echo $post->asking_name; ?> asked:</p>
 				<p class="pad10"><?php echo $post->question; ?></p>
+				<?php if($post->state != "submission" || $post->answer != ""){ ?>
 				<p class="bg-info pad10">Answer:</p>
 				<div class="pad10"><?php echo $post->answer; ?></div>
-				<?php
+				<?php }
 			} else if($post->type == "audio"){
 				?>
 				<audio controls class="audio" preload="none">
@@ -139,7 +175,7 @@ if(in_array($post->blog_name, $myblogs)){
 			}
 
 			if(!$no_body){
-				echo $post->body; echo $post->caption;
+				echo '<div class="body">' . $post->body . '</div>'; echo $post->caption;
 			}
 		?>
 	</div>
