@@ -9,7 +9,7 @@
 
 	<title><?php if(!$title) { ?>tumblr client by @kennydude<?php } else{ echo $title; } ?></title>
 
-	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+	<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
 	<style type="text/css">
 		img{
 			max-width: 100%;
@@ -33,7 +33,7 @@
 		.pad10{
 			padding: 10px;
 		}
-		.panel-primary .panel-heading a{
+		.panel-primary .panel-heading .cnt a{
 			color: #FFF;
 		}
 		.headerXTY23{
@@ -41,11 +41,13 @@
 			color: #FFF;
 			font-size: 12px;
 			margin-bottom: 9px;
-			text-align: center;
 			padding: 10px;
 			position: fixed;
 			z-index: 999999999;
 			top: 0; left: 0; right: 0;
+		}
+		.c{
+			text-align: center;
 		}
 		.headerXTY23 a{
 			color: #FFF;
@@ -77,6 +79,15 @@
 		.faded{
 			opacity: 0.4;
 		}
+		.blognav{
+			width: 200px;
+			position: absolute;
+			margin-left: -220px;
+		}
+		body .sp{
+			padding-left: 6px;
+			padding-right: 6px;
+		}
 	</style>
 </head>
 <body>
@@ -84,7 +95,34 @@
 <?php if(!defined("NOHEADER")){ ?>
 	<div class="headerXTY23">
 		<div class="container">
-			<a href="index.php">tumblr client by @kennydude</a>
+			<div class="row">
+				<div class="col-md-6 col-md-offset-3 c">
+					<a class="btn btn-xs btn-primary" href="index.php">tumblr client by @kennydude</a>
+				</div>
+				<div class="col-md-1">
+					<div class="dropdown">
+						<button class="btn btn-primary btn-xs dropdown-toggle" type="button" id="myMenu" data-toggle="dropdown">
+							<i class="glyphicon glyphicon-align-justify"></i>
+						</button>
+						<ul class="dropdown-menu" role="menu" aria-labelledby="myMenu">
+							<li role="presentation" class="dropdown-header">My Blogs</li>
+							<?php
+							$blogs = get_my_blogs();
+							foreach($blogs as $hd_blog){
+							?>
+							<li role="presentation">
+								<a role="menuitem" title="<?php echo $hd_blog->title; ?>" tabindex="-1" href="blog.php?blog=<?php echo $hd_blog->name; ?>">
+									<?php echo $hd_blog->name; ?>
+								</a>
+							</li>
+							<?php
+							}
+							?>
+							<li role="presentation" class="divider"></li>
+						</ul>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 <?php } ?>

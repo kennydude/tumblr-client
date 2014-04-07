@@ -15,23 +15,60 @@ if(in_array($post->blog_name, $myblogs)){
 	echo 'panel-default';
 } ?> post" id="post<?php echo $post->id; ?>">
 	<div class="panel-heading">
-		<?php
-		if($me){
-			?><span class="label pull-right label-default">YOUR POST</span><?php
-		}
-		?>
-		<img src="http://api.tumblr.com/v2/blog/<?php echo $post->blog_name; ?>.tumblr.com/avatar/24" />
-		<?php
-			echo '<a href="post.php?id=' . $post->id . '&name='.$post->blog_name.'">' . $post->blog_name . '</a>';
-			if($post->reblogged_from_id){
-				echo ' reblogged from <a href="post.php?id=' . $post->reblogged_from_id . '&name='.$post->reblogged_from_name.'">' . $post->reblogged_from_name . '</a>';
-				if(in_array($post->reblogged_from_name, $myblogs)){
-					echo ' <span class="label label-default">THAT\'S YOU</span>';
+		<div class="row">
+			<div class="col-md-1 sp">
+				<img src="http://api.tumblr.com/v2/blog/<?php echo $post->blog_name; ?>.tumblr.com/avatar/48" />
+			</div>
+			<div class="col-md-9 sp cnt">
+				<?php
+					echo '<a href="blog.php?blog='.$post->blog_name.'">' . $post->blog_name . '</a>';
+					if($post->reblogged_from_id){
+						echo ' <a href="post.php?id='. $post->id . '&name=' . $post->blog_name . '">' .
+							'reblogged</a> from <a href="post.php?id=' . $post->reblogged_from_id . '&name='.$post->reblogged_from_name.'">' . $post->reblogged_from_name . '</a>';
+						if(in_array($post->reblogged_from_name, $myblogs)){
+							echo ' <span class="label label-default">THAT\'S YOU</span>';
+						}
+					} else{
+						echo ' <a href="post.php?id='. $post->id . '&name=' . $post->blog_name . '">posted</a>';
+					}
+				?> <span class="timeago" data-timestamp="<?php echo $post->timestamp; ?>">... ago</span>
+			</div>
+			<div class="col-md-2">
+				<div class="dropdown pull-right">
+					<button class="btn btn-primary btn-xs dropdown-toggle" type="button" id="pm<?php echo $post->id; ?>" data-toggle="dropdown">
+						<i class="glyphicon glyphicon-align-justify"></i>
+					</button>
+					<ul class="dropdown-menu" role="menu" aria-labelledby="pm<?php echo $post->id; ?>">
+						<?php
+						if($post->reblogged_from_id){
+							$rootid = $post->reblogged_root_url;
+							$index = stripos($rootid, "/post/") + 6;
+							$e = $index - stripos($rootid, "/", $index);
+							if($e < 0) $e = NULL;
+							$rootid = substr($rootid, $index, $e);
+							?>
+						<li role="presentation">
+							<a role="menuitem" tabindex="-1"
+								href="post.php?id=<?php echo $post->reblogged_from_id; ?>&name=<?php echo $post->reblogged_from_name; ?>">
+								Reblogged Post
+							</a>
+						</li>
+						<li role="presentation">
+							<a role="menuitem" tabindex="-1" href="post.php?id=<?php echo $rootid; ?>&name=<?php echo $post->reblogged_root_name; ?>">Root Post</a>
+						</li>
+						<?php } ?>
+						<li role="presentation">
+							<a role="menuitem" tabindex="-1" href="<?php echo $post->source_url; ?>">Source</a>
+						</li>
+					</ul>
+				</div>
+				<?php
+				if($me){
+					?><span class="label label-default pull-right">ME</span><?php
 				}
-			} else{
-				echo ' posted';
-			}
-		?> <span class="timeago" data-timestamp="<?php echo $post->timestamp; ?>">... ago</span>
+				?>
+			</div>
+		</div>
 	</div>
 	<div class="panel-body">
 		<?php
@@ -60,12 +97,17 @@ if(in_array($post->blog_name, $myblogs)){
 				}
 			} else if($post->type == 'video'){
 				$player = ''; $lw = 0;
-				foreach($post->player as $pl){
-					if($pl->width > $lw){
-						$player = $pl->embed_code;
+				if($post->player){
+					foreach($post->player as $pl){
+						if($pl->width > $lw){
+							$player = $pl->embed_code;
+						}
 					}
+					echo '<div class="videoplayer m10down">' .$player . '</div>';
+				} else if($post->permalink_url){
+					echo '<a href="' . $post->permalink_url . '" target="_blank">';
+					echo '<img src="' . $post->thumbnail_url  . '" class="fwidth" /></a>';
 				}
-				echo '<div class="videoplayer m10down">' .$player . '</div>';
 			} else if($post->type == 'answer'){
 				?>
 				<p class="bg-info pad10"><?php echo $post->asking_name; ?> asked:</p>

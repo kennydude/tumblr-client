@@ -1,5 +1,8 @@
 <?php
 require 'config.php';
+$client = new Tumblr\API\Client($consumerKey, $consumerSecret);
+$client->setToken($token, $tokenSecret);
+
 require 'rb.phar';
 
 R::setup("sqlite:cache/db.db", 'x', 'x');
@@ -44,4 +47,10 @@ function get_userinfo($cache = true){
 
 function nocdn($in){
 	return preg_replace( "/[0-9]+\.media\.tumblr\.com\//", "media.tumblr.com/", $in);
+}
+
+function require_official_api(){
+	if(!OFFICIAL_API){
+		die("Unfortunately, Tumblr have made this API official only. If you have aquired your official credentails, the OFFICIAL_API flag can be set");
+	}
 }
