@@ -1,0 +1,20 @@
+{
+  "name": "tumblr",
+  "version": "0.0.0",
+  "authors": [
+    "Joe Simpson <headbangerkenny@googlemail.com>"
+  ],
+  "dependencies": {
+    "photoset-grid": "*",
+    "jquery": "*",
+    "momentjs": "~2.5.1"
+  },
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

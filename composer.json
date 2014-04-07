@@ -1,0 +1,6 @@
+{
+	"name" : "kennydude/tumblr",
+	"require": {
+		"tumblr/tumblr": "dev-master"
+	}
+}
