@@ -10,12 +10,16 @@
 	<title><?php if(!$title) { ?>tumblr client by @kennydude<?php } else{ echo $title; } ?></title>
 
 	<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+	<link rel="stylesheet" href="bower_components/video.js/video-js.min.css">
 	<style type="text/css">
 		img{
 			max-width: 100%;
 		}
 		.fullwidth{
 			width: 100%;
+		}
+		div.fullwidth *{
+			max-width: 100%;
 		}
 		.post-options{
 			text-align: right;
@@ -64,7 +68,6 @@
 		}
 		.panel-body{
 			word-wrap: break-word;
-			word-break: break-all;
 		}
 		<?php if(!defined("NOHEADER")){ ?>
 		.mainBody{
@@ -93,6 +96,10 @@
 			white-space: pre;
 			overflow-x: scroll;
 			font-size: 20px;
+		}
+		.replyBox{
+			width: 200px;
+			height: 100px;
 		}
 	</style>
 </head>

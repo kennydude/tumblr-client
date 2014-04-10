@@ -1,4 +1,5 @@
 <?php
+// EACH
 // POST THEME
 $myblogs = get_my_blog_names();
 
@@ -132,6 +133,7 @@ if(in_array($post->blog_name, $myblogs)){
 				}
 			} else if($post->type == 'video'){
 				$player = ''; $lw = 0;
+				echo '<div class="fullwidth">';
 				if($post->player){
 					foreach($post->player as $pl){
 						if($pl->width > $lw){
@@ -142,7 +144,15 @@ if(in_array($post->blog_name, $myblogs)){
 				} else if($post->permalink_url){
 					echo '<a href="' . $post->permalink_url . '" target="_blank">';
 					echo '<img src="' . $post->thumbnail_url  . '" class="fwidth" /></a>';
+				} else if($post->video_url){
+					echo '<video controls preload="false" poster="'.$post->thumbnail_url.'" ';
+					echo 'class="video-js vjs-default-skin" id="vd'.$post->id.'">';
+					echo '<source type="video/mp4" src="' . $post->video_url . '" />';
+					echo '</video>';
+				} else{
+					echo '<div class="alert alert-warning">Cannot display this video (Unknown JSON)</div>';
 				}
+				echo '</div>';
 			} else if($post->type == 'answer'){
 				?>
 				<p class="bg-info pad10"><?php echo $post->asking_name; ?> asked:</p>
@@ -192,6 +202,20 @@ if(in_array($post->blog_name, $myblogs)){
 				?>
 			</div>
 			<div class="col-xs-4 post-options">
+				<?php
+				if($post->can_reply){
+					?>
+					<i 	class="glyphicon glyphicon-bullhorn replyButton"
+						data-postid="<?php echo $post->id; ?>"
+						data-reblogkey="<?php echo $post->reblog_key; ?>"
+						data-toggle="popover" data-placement="bottom"
+						data-container="body"
+						data-content="<textarea placeholder='Reply' id='reply<?php echo $post->id; ?>' class='replyBox'></textarea><button class='btn btn-primary btn-block'>Reply</button>"
+						title="Reply to this post">
+					</i>
+					<?php
+				}
+				?>
 				<a href="<?php echo $post->post_url; ?>"><i class="glyphicon glyphicon-link permalink"></i></a>
 				<i 	class="glyphicon glyphicon-heart <?php echo $post->liked ? 'liked' : ''; ?> likeButton"
 					data-postid="<?php echo $post->id; ?>"

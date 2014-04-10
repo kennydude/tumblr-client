@@ -41,7 +41,7 @@ function get_userinfo($cache = true){
 	} else{
 		$me = $client->getUserInfo();
 		file_put_contents("cache/me.json", json_encode($me));
-		return get_userinfo(true);
+		return $me;
 	}
 }
 
