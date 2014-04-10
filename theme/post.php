@@ -118,7 +118,14 @@ if(in_array($post->blog_name, $myblogs)){
 				// Photoset
 				echo '<div class="photoset m10down" data-layout="'.$post->photoset_layout.'">';
 				foreach($post->photos as $photo){
-					echo '<img data-width="'.$photo->original_size->width.'" data-height="'.$photo->original_size->height.'" src="'.nocdn($photo->original_size->url).'" />';
+					$size = null; $large = 0;
+					foreach ($photo->alt_sizes as $x) {
+						if($large < $x->width){
+							$size = $x;
+							$large = $x->width;
+						}
+					}
+					echo '<img data-width="'.$size->width.'" data-height="'.$size->height.'" href="'.nocdn($photo->original_size->url).'" src="'.nocdn($size->url).'" />';
 				}
 				echo '</div>';
 			} else if($post->photos){
@@ -133,7 +140,7 @@ if(in_array($post->blog_name, $myblogs)){
 				}
 			} else if($post->type == 'video'){
 				$player = ''; $lw = 0;
-				echo '<div class="fullwidth">';
+				echo '<div class="fullwidth m10down">';
 				if($post->player){
 					foreach($post->player as $pl){
 						if($pl->width > $lw){
@@ -185,7 +192,7 @@ if(in_array($post->blog_name, $myblogs)){
 			}
 
 			if(!$no_body){
-				echo '<div class="body">' . $post->body . '</div>'; echo $post->caption;
+				echo '<div class="body">' . $post->body . $post->caption . '</div>';
 			}
 		?>
 	</div>
@@ -203,7 +210,7 @@ if(in_array($post->blog_name, $myblogs)){
 			</div>
 			<div class="col-xs-4 post-options">
 				<?php
-				if($post->can_reply){
+				if($post->can_reply && OFFICIAL_API){
 					?>
 					<i 	class="glyphicon glyphicon-bullhorn replyButton"
 						data-postid="<?php echo $post->id; ?>"

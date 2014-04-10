@@ -1,0 +1,84 @@
+img{
+	max-width: 100%;
+}
+.fullwidth{
+	width: 100%;
+}
+div.fullwidth *{
+	max-width: 100%;
+}
+.post-options{
+	text-align: right;
+	font-size: 20px;
+}
+.post-options > *{
+	margin-left: 5px;
+	cursor: pointer;
+}
+.reblogFrame{
+	width: 100%;
+	height: 200px;
+	border: 0px;
+}
+.pad10{
+	padding: 10px;
+}
+.panel-primary .panel-heading .cnt a{
+	color: #FFF;
+}
+.headerXTY23{
+	background: #428BCA;
+	color: #FFF;
+	font-size: 12px;
+	margin-bottom: 9px;
+	padding: 10px;
+	position: fixed;
+	z-index: 9;
+	top: 0; left: 0; right: 0;
+}
+.c{
+	text-align: center;
+}
+.headerXTY23 a{
+	color: #FFF;
+}
+.audio{
+	width: 100%;
+}
+.m10down{
+	margin-bottom: 10px;
+}
+.caret.caret-reversed {
+	border-top-width: 0;
+	border-bottom: 4px solid #000000;
+}
+.panel-body{
+	word-wrap: break-word;
+}
+blockquote blockquote{
+	padding-right: 0px;
+}
+.likeButton.liked{
+	color: #A94442;
+}
+.faded{
+	opacity: 0.4;
+}
+.blognav{
+	width: 200px;
+	position: absolute;
+	margin-left: -220px;
+}
+body .sp{
+	padding-left: 6px;
+	padding-right: 6px;
+}
+.body-postcard .body{
+	white-space: pre;
+	overflow-x: scroll;
+	font-size: 20px;
+}
+.replyBox{
+	width: 200px;
+	height: 100px;
+}

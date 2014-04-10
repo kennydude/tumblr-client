@@ -19,15 +19,21 @@ if($_POST){
 		$state = 'draft'; // f u tumblr
 	}
 
+	$opts = array(
+		'comment' => $_POST['contents'],
+		'state' => $state,
+		'tags' => $_POST['tags']
+	);
+
+	if($_POST['contents'] == ""){ // Blank
+		$_POST['contents'] = '<p></p>';
+	}
+
 	$rsp = $client->reblogPost(
 		$_POST['blog'] . '.tumblr.com',
 		$_POST['postid'], 
 		$_POST['reblogkey'],
-		array(
-			'comment' => $_POST['contents'],
-			'state' => $state,
-			'tags' => $_POST['tags']
-		)
+		$opts
 	);
 
 	if(!$oldpost->id){
@@ -40,7 +46,10 @@ if($_POST){
 	}
 
 	if($_POST['delete_contents']){
-		// TODO
+		$client->editPost($_POST['blog'], $rsp->id, array(
+			"caption" => $_POST['contents'],
+			"state" => $_POST['when']
+		));
 	}
 
 	var_dump($rsp);

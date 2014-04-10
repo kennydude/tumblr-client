@@ -9,7 +9,8 @@
     "jquery": "*",
     "momentjs": "~2.5.1",
     "bootstrap": "~3.1.1",
-    "video.js": "~4.3.0"
+    "video.js": "~4.3.0",
+    "magnific-popup": "~0.9.9"
   },
   "license": "MIT",
   "ignore": [
