@@ -11,6 +11,19 @@ if(!$_GET['action']){
 	$_GET['action'] = "posts";
 }
 
+if(in_array($blog, $myblogs)){
+	$my_blogs = get_my_blogs( $_GET['refresh'] == "true" ? false : true );
+	foreach ($my_blogs as $xx_blog) {
+		if($xx_blog->name == $blog){
+			$bloginfo = $xx_blog;
+			define("VIEWING_MY_BLOG", true);
+		}
+	}
+}
+if(!$bloginfo){
+	$bloginfo = $client->getBlogInfo($blog);
+}
+
 function blog_header(){
 	global $blog, $myblogs, $bloginfo, $client;
 	$actions = array("posts", "text", "photos", "quotes", "links", "chats", "audio", "videos", "answers");
@@ -20,39 +33,58 @@ function blog_header(){
 	if(in_array($blog, $myblogs)){
 		$actions[] = "queue";
 		$actions[] = "drafts";
-		$actions[] = "submissions";
-	}
-
-	if(!$bloginfo){
-		if(in_array($blog, $myblogs)){
-			$my_blogs = get_my_blogs();
-			foreach ($my_blogs as $xx_blog) {
-				if($xx_blog->name == $blog){
-					$bloginfo = $xx_blog;
-				}
-			}
-		} else{
-			$bloginfo = $client->getBlogInfo($blog);
-		}
+		$actions[] = "messages";
 	}
 	?>
-	<div class="bloginfo row m10down">
+	<div class="bloginfo post row m10down">
 		<div class="col-md-2">
 			<img src="http://api.tumblr.com/v2/blog/<?php echo $bloginfo->name; ?>.tumblr.com/avatar/64" />
 		</div>
 		<div class="col-md-10">
 			<h5><?php echo $bloginfo->name; ?></h5>
 			<p><?php echo $bloginfo->description; ?></p>
+			<p class="stats">
+				<strong>
+				<?php
+					echo $bloginfo->posts . " posts ";
+					if($bloginfo->followers){
+						echo $bloginfo->followers . " followers ";
+					}
+				?>
+				</strong>
+				<?php if(defined("VIEWING_MY_BLOG")){ ?>
+				<a href="?<?php echo $_SERVER['QUERY_STRING']; ?>&refresh=true">
+					<i 	class="glyphicon glyphicon-refresh"
+						title="Refresh data">
+					</i>
+				</a>
+				<?php } if(defined("DEBUG")){ ?>
+				<i 	class="glyphicon glyphicon-screenshot sourceButton pull-right"
+					title="View full data returned from tumblr">
+				</i>
+				<pre class="hidden postsource"><?php ob_start(); var_dump($bloginfo); $x = ob_get_contents(); ob_end_clean(); echo htmlspecialchars($x); ?></pre><?php } ?>
+			</p>
 		</div>
 	</div>
 	<ul class="nav nav-pills nav-stacked m10down blognav">
 		<?php
+		$a = $_GET['action'];
+		if($_GET['type']){
+			$a = $_GET['type'];
+		}
 		foreach ($actions as $action) {
 			echo '<li ';
-			echo $action == $_GET['action'] ? ' class="active"' : '';
-			echo '><a href="?blog=' . $blog;
+			echo $action == $a ? ' class="active"' : '';
+			echo '>';
+			echo '<a href="?blog=' . $blog;
 			echo $action == "posts" ? '' : '&action=' . $action;
-			echo '">' . ucfirst($action) . '</a></li>';
+			echo '">';
+
+			if($bloginfo->$action !== NULL){
+				echo '<span class="badge pull-right">'.$bloginfo->$action.'</span>';
+			}
+
+			echo ucfirst($action) . '</a></li>';
 		}
 		?>
 	</ul>
@@ -63,6 +95,7 @@ switch($_GET['action']){
 	case "notes":
 		require_official_api();
 
+		$title = $blog  . " - notes";
 		require "theme/header.php";
 		blog_header();
 
@@ -82,10 +115,15 @@ switch($_GET['action']){
 	case "videos":
 	case "answers":
 		$_GET['type'] = $_GET['action']; // no break
+		$type = $_GET['type'];
+		if(stripos($_GET['type'], "s")){
+			$type = substr($_GET['type'], 0, strlen($_GET['type'])-1);
+		}
+		$_GET['action'] = 'posts';
 	case "posts":
 	case "queue":
 	case "drafts":
-	case "submissions":
+	case "messages":
 		$opts = array(
 			'reblog_info' => 'true'
 		);
@@ -99,26 +137,38 @@ switch($_GET['action']){
 			$opts['max_id'] = $_GET['max_id'];
 		}
 
-		if($_GET['type']){
-			$opts['type'] = $_GET['type'];
+		if($type){
+			$opts['type'] = $type;
 			$ex .= "&type=" . $_GET['type'];
 		}
 
 		switch ($_GET['action']) {
 			case 'posts':
+				$title = $blog . ' - posts';
+				if($_GET['type']){
+					$title .= ' - ' . $_GET['type'];
+				}
 				$dashboard = $client->getBlogPosts($blog, $opts);
 				break;
 			case 'queue':
+				$title = $blog . ' - queue';
 				$dashboard = $client->getQueuedPosts($blog, $opts);
 				break;
 			case 'drafts':
+				$title = $blog . ' - drafts';
 				$dashboard = $client->getDraftPosts($blog, $opts);
 				break;
-			case 'submissions':
+			case 'messages':
+				$title = $blog . ' - messages';
 				$dashboard = $client->getSubmissionPosts($blog, $opts);
 				break;
+			default:
+				die('err');
+				break;
 		}
-		$bloginfo = $dashboard->blog;
+		if($dashboard->blog && !defined("VIEWING_MY_BLOG")){
+			$bloginfo = $dashboard->blog;
+		}
 		$dashboard = $dashboard->posts;
 
 		require "theme/header.php";

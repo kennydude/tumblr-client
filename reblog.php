@@ -12,6 +12,24 @@ if($POST){
 }
 $oldpost = R::findOne("reblog", "url = ?", array($_GET['reblogged_root_url']));
 
+function do_post(){
+	global $rsp, $client, $opts;
+
+	$rsp = $client->reblogPost(
+		$_POST['blog'] . '.tumblr.com',
+		$_POST['postid'], 
+		$_POST['reblogkey'],
+		$opts
+	);
+
+	if($_POST['delete_contents']){
+		$client->editPost($_POST['blog'], $rsp->id, array(
+			"caption" => $_POST['contents'],
+			"state" => $_POST['when']
+		));
+	}
+}
+
 if($_POST){
 
 	$state = $_POST['when'];
@@ -29,36 +47,99 @@ if($_POST){
 		$_POST['contents'] = '<p></p>';
 	}
 
-	$rsp = $client->reblogPost(
-		$_POST['blog'] . '.tumblr.com',
-		$_POST['postid'], 
-		$_POST['reblogkey'],
-		$opts
-	);
+	if($_POST['when'] == "slowqueue"){
 
-	if(!$oldpost->id){
 		$obj = R::dispense("reblog");
+		$obj->type = "slowqueue";
 		$obj->url = $_POST['reblogged_root_url'];
 		$obj->blog = $_POST['blog'];
-		$obj->postid = $rsp->id;
+		$obj->postid = $_POST['postid'];
 		$obj->when = time();
+		$obj->data = json_encode($_POST); // Encode everyting for the sake of it
 		R::store($obj);
+
+	} else{
+		// Normal post
+
+		do_post();
+
+		if(!$oldpost->id){
+			$obj = R::dispense("reblog");
+			$obj->type = "normal";
+			$obj->url = $_POST['reblogged_root_url'];
+			$obj->blog = $_POST['blog'];
+			$obj->postid = $rsp->id;
+			$obj->when = time();
+			R::store($obj);
+		}
+
+		if($_POST['when'] == "queue"){
+			// See if we should release a slowqueue element
+			$herd = @file_get_contents("cache/slowqueue.txt");
+			if(!$herd) $herd = 0;
+
+			if($herd == "5"){
+				// Get exact post info
+				$reblog = R::findOne("reblog", " `type` = 'slowqueue' ORDER BY `when` ASC");
+				if($reblog->id){
+
+					$oldstate = $_POST['when'];
+					$_POST = json_decode($reblog->data, true);
+
+					$opts = array(
+						'comment' => $_POST['contents'],
+						'state' => $state,
+						'tags' => $_POST['tags']
+					);
+
+					do_post();
+
+					$reblog->type = "normal";
+					R::store($reblog);
+
+					$ex = <<<EOF
+<div class="alert alert-success">
+	<p><strong>Slow Queue:</strong> A slowly queued post was added to the queue</p>
+</div>
+EOF;
+
+					$_POST['when'] = $oldstate;
+					$herd = 0;
+				}
+			} else{
+				$herd = $herd + 1;
+			}
+
+			file_put_contents("cache/slowqueue.txt", $herd);
+
+			if(defined("DEBUG")){
+				echo '<p>dbg: herd key: ' . $herd . '</p>';
+			}
+		}
+
 	}
 
-	if($_POST['delete_contents']){
-		$client->editPost($_POST['blog'], $rsp->id, array(
-			"caption" => $_POST['contents'],
-			"state" => $_POST['when']
-		));
-	}
-
-	var_dump($rsp);
-
-	?>
+	?><br/>
 	<div class="alert alert-success">
-		<p>Done</p>
+		<p><?php
+switch ($_POST['when']) {
+	case 'queue':
+		echo 'Queued post';
+		break;
+	case 'slowqueue':
+		echo '<strong>Slow Queue:</strong> Post Added</p><p>';
+		echo 'The slow queue works by adding posts to the queue, every 5 that are nornally queued. This is useful for';
+		echo ' preventing a sudden load of posts on a specific thing';
+		break;
+	default:
+		echo 'Done';
+		break;
+}
+		?></p>
 	</div>
 	<?php
+	echo $ex;
+
 	require 'theme/footer.php';
 	exit;
 }
@@ -101,6 +182,7 @@ if($oldpost->id){
 		<select name="when">
 			<option value="published">Publish Now</option>
 			<option value="queue">Add to Queue</option>
+			<option value="slowqueue">Add to slow queue</option>
 			<option value="draft">Draft</option>
 			<option value="private">Private</option>
 		</select>

@@ -110,7 +110,7 @@ if(in_array($post->blog_name, $myblogs)){
 		<?php
 			$no_body = false;
 
-			if($post->title){
+			if($post->title && $post->type != "link"){
 				echo '<h3>' . $post->title . '</h3>';
 			}
 
@@ -189,10 +189,25 @@ if(in_array($post->blog_name, $myblogs)){
 					<footer><?php echo $post->source; ?></footer>
 				</blockquote>
 				<?php
+			} else if($post->type == "link"){
+				?>
+				<div class="row m10down">
+					<?php if( $post->link_image ) { ?>
+					<div class="col-md-4">
+						<img src="<?php echo nocdn($post->link_image); ?>" />
+					</div>
+					<?php } ?>
+					<div class="col-md-8">
+						<a href="<?php echo $post->url; ?>">
+							<h3><?php echo $post->title; ?></h3>
+						</a>
+					</div>
+				</div>
+				<?php
 			}
 
 			if(!$no_body){
-				echo '<div class="body">' . $post->body . $post->caption . '</div>';
+				echo '<div class="body">' . $post->body . $post->caption . $post->description . '</div>';
 			}
 		?>
 	</div>
