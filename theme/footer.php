@@ -12,6 +12,9 @@
 <script type="text/javascript" src="bower_components/magnific-popup/dist/jquery.magnific-popup.min.js"></script>
 
 <script type="text/javascript" src="theme/script.js"></script>
+<?php if($scripts){
+	echo '<script type="text/javascript">' . $scripts . '</script>';
+} ?>
 
 </body>
 </html>

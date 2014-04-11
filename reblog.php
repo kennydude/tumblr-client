@@ -162,7 +162,7 @@ if($oldpost->id){
 	<?php
 }
 ?>
-<form method="post" action="?">
+<form method="post" action="?" id="theform">
 	<input type="hidden" name="postid" value="<?php echo $_GET['postid']; ?>" />
 	<input type="hidden" name="reblogkey" value="<?php echo $_GET['reblogkey']; ?>" />
 	<input type="hidden" name="reblogged_root_url" value="<?php echo $_GET['reblogged_root_url']; ?>" />
@@ -192,9 +192,14 @@ if($oldpost->id){
 		<input type="checkbox" name="delete_contents" />
 		Delete Contents
 	</label>
-	<button type="submit" class="btn btn-lg btn-primary">Reblog</button>
+	<button type="submit" id="rbButton" class="btn btn-lg btn-primary">Reblog</button>
 	<input type="text" name="tags" placeholder="tags" />
 </form>
 <?php
+$scripts = <<<EOF
+$("#theform").on("submit", function(){
+	$("#rbButton").text("Reblogging...").attr("disabled", "disabled");
+});
+EOF;
 
 require 'theme/footer.php';

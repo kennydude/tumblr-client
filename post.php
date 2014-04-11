@@ -8,6 +8,8 @@ $post = $client->getBlogPosts($_GET['name'], array(
 	'reblog_info' => 'true'
 ));
 
+$title = "single post by " . $post->posts[0]->blog_name;
+
 require 'theme/header.php';
 foreach($post->posts as $post){
 	require 'theme/post.php';
