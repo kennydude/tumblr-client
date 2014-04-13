@@ -48,6 +48,12 @@ div.fullwidth *{
 .m10down{
 	margin-bottom: 10px;
 }
+.m10top{
+	margin-top: 10px;
+}
+.m10right{
+	margin-right: 10px;
+}
 .caret.caret-reversed {
 	border-top-width: 0;
 	border-bottom: 4px solid #000000;

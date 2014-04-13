@@ -35,7 +35,18 @@ $(document).ready(function(){
 		});
 	});
 	$('.replyButton').popover({ "html" : true }).on("click", function(){
+		var self = this;
 		$("#reply" + $(this).data("postid")).focus();
+		$("#replySubmit" + $(this).data("postid")).on("click", function(){
+			$(this).attr("disabled", "disabled").text("Replying...");
+			$.post("reply.php", {
+				"postid" : $(self).data("postid"),
+				"reblogkey" : $(self).data("reblogkey"),
+				"content" : $("#reply" + $(self).data("postid")).val()
+			}, function(){
+				$("#replySubmit" + $(self).data("postid")).text("OK");
+			});
+		});
 	});
 	setTimeout(function(){
 		$("video").each(function(){

@@ -99,10 +99,20 @@ switch($_GET['action']){
 		require "theme/header.php";
 		blog_header();
 
-		$notes = $client->getRequest("v2/blog/".$blog.".tumblr.com/notifications", array(), false);
+		$notes = $client->getRequest("v2/blog/".$blog.".tumblr.com/notifications", array(
+			"before" => $_GET['before'],
+			"rfg" => true
+		), false);
 		foreach ($notes->notifications as $note) {
 			require "theme/note.php";
+			$lasttime = $note->before;
 		}
+
+		?>
+		<div class="pagination">
+			<a href="?blog=<?php echo $blog; ?>&action=notes&before=<?php echo $lasttime; ?>" class="btn btn-lg btn-primary">Forward!</a>
+		</div>
+		<?php
 
 		require "theme/footer.php";
 		break;
@@ -134,7 +144,8 @@ switch($_GET['action']){
 			$opts['before'] = $_GET['before'];
 		}
 		if($_GET['max_id']){
-			$opts['max_id'] = $_GET['max_id'];
+			// this could be official only :/
+			$opts['before_id'] = $_GET['max_id'];
 		}
 
 		if($type){
@@ -185,10 +196,17 @@ switch($_GET['action']){
 
 		if($lastid){
 
-			if($_GET['tagged']){
-				$ex = 'before=' . $t . $ex;
+			$ex = 'blog=' . $blog . '&action=';
+			if($type){
+				$ex .= $type;
 			} else{
-				$ex = "max_id=" . $lastid . $ex;
+				$ex .= $_GET['action'];
+			}
+
+			if($_GET['tagged']){
+				$ex .= '&before=' . $t;
+			} else{
+				$ex .= "&max_id=" . $lastid;
 			}
 			?>
 			<div class="pagination">

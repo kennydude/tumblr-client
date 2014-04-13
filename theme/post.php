@@ -38,6 +38,8 @@ if($post->state == "submission" && ($post->type == "answer" || $post->type == "p
 	post_set_vars();
 }
 
+$post_url = 'post.php?id='. $post->id . '&name=' . $post->blog_name;
+
 ?>
 <div class="panel <?php
 if(in_array($post->blog_name, $myblogs)){
@@ -56,7 +58,7 @@ if(in_array($post->blog_name, $myblogs)){
 				<?php
 					echo '<a href="blog.php?blog='.$post->blog_name.'">' . $post->blog_name . '</a>';
 					if($post->reblogged_from_id){
-						echo ' <a href="post.php?id='. $post->id . '&name=' . $post->blog_name . '">' .
+						echo ' <a href="'.$post_url.'">' .
 							'reblogged</a> from <a href="post.php?id=' . $post->reblogged_from_id . '&name='.$post->reblogged_from_name.'">' . $post->reblogged_from_name . '</a>';
 						if(in_array($post->reblogged_from_name, $myblogs)){
 							echo ' <span class="label label-default">THAT\'S YOU</span>';
@@ -216,7 +218,7 @@ if(in_array($post->blog_name, $myblogs)){
 			<div class="col-xs-8">
 				<?php
 					if($post->note_count > 0){
-						echo $post->note_count . ' notes ';
+						echo '<a href="' . $post_url . '">' . $post->note_count . ' notes</a> ';
 					}
 					foreach($post->tags as $tag){
 						echo '<a href="?tagged='.urlencode($tag).'">#' . $tag . '</a> ';
@@ -232,7 +234,7 @@ if(in_array($post->blog_name, $myblogs)){
 						data-reblogkey="<?php echo $post->reblog_key; ?>"
 						data-toggle="popover" data-placement="bottom"
 						data-container="body"
-						data-content="<textarea placeholder='Reply' id='reply<?php echo $post->id; ?>' class='replyBox'></textarea><button class='btn btn-primary btn-block'>Reply</button>"
+						data-content="<textarea placeholder='Reply' id='reply<?php echo $post->id; ?>' class='replyBox'></textarea><button id='replySubmit<?php echo $post->id; ?>' class='btn btn-primary btn-block'>Reply</button>"
 						title="Reply to this post">
 					</i>
 					<?php

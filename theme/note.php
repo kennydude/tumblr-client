@@ -12,6 +12,14 @@ switch ($note->type) {
 	case 'follower':
 		$cls = 'alert-info';
 		break;
+	case 'reply':
+		$cls = "alert-info";
+		$verb = "replied to";
+		break;
+	case 'posted':
+		$cls = "alert-success";
+		$verb = "posted";
+		break;
 	default:
 		$cls = 'alert-default';
 		$verb = $note->type = 'ed';
@@ -24,7 +32,7 @@ if(!$note->blog_name){ // We know it's a notification
 }
 ?>
 <div class="note post alert <?php echo $note->type . ' ' . $cls; ?>">
-	<img src="http://api.tumblr.com/v2/blog/<?php echo $note->blog_name; ?>.tumblr.com/avatar/24" />
+	<img class="m10right" src="http://api.tumblr.com/v2/blog/<?php echo $note->blog_name; ?>.tumblr.com/avatar/24" />
 	<?php
 		switch ($note->type) {
 			case 'follower':
@@ -38,6 +46,10 @@ if(!$note->blog_name){ // We know it's a notification
 					echo ' this';
 				}
 				break;
+		}
+
+		if($note->type == "reply"){
+			echo '<blockquote class="m10top">'.$note->reply_text.'</blockquote>';
 		}
 	?>
 	<?php if(defined("DEBUG")){ ?>

@@ -54,3 +54,26 @@ function require_official_api(){
 		die("Unfortunately, Tumblr have made this API official only. If you have aquired your official credentails, the OFFICIAL_API flag can be set");
 	}
 }
+
+
+
+/*
+# official api
+
+ssshhh
+
+If you use tumblr credentials, you can unlock magical features.
+
+Config file needs define("OFFICIAL_API", true); set
+
+Use root shell on android:
+
+cat /data/data/com.tumblr/shared_prefs/tumblr.xml
+
+ck: BUHsuO5U9DF42uJtc8QTZlOmnUaJmBJGuU1efURxeklbdiLn9L
+cs: olOu3aRBCdqCuMFm8fmzNjMAWmICADSIuXWTnVSFng1ZcLU1cV
+
+Dear Tumblr: There is no reason for these APIs to be private
+			 So please stop making them private.
+
+*/
