@@ -73,6 +73,9 @@ cat /data/data/com.tumblr/shared_prefs/tumblr.xml
 ck: BUHsuO5U9DF42uJtc8QTZlOmnUaJmBJGuU1efURxeklbdiLn9L
 cs: olOu3aRBCdqCuMFm8fmzNjMAWmICADSIuXWTnVSFng1ZcLU1cV
 
+also vendor/tumblr/lib/Tumblr/API/Client.php needs changing
+functions getRequest and postRequest need to be made public
+
 Dear Tumblr: There is no reason for these APIs to be private
 			 So please stop making them private.
 

@@ -75,12 +75,14 @@ if($_POST){
 
 		if($_POST['when'] == "queue"){
 			// See if we should release a slowqueue element
-			$herd = @file_get_contents("cache/slowqueue.txt");
+			$herd = @file_get_contents("cache/slowqueue-".md5($_POST['blog']).".txt");
 			if(!$herd) $herd = 0;
 
 			if($herd == "5"){
 				// Get exact post info
-				$reblog = R::findOne("reblog", " `type` = 'slowqueue' ORDER BY `when` ASC");
+				$reblog = R::findOne("reblog", " `type` = 'slowqueue' AND `blog` = ? ORDER BY `when` ASC", array(
+					$_POST['blog']
+				));
 				if($reblog->id){
 
 					$oldstate = $_POST['when'];
@@ -110,10 +112,10 @@ EOF;
 				$herd = $herd + 1;
 			}
 
-			file_put_contents("cache/slowqueue.txt", $herd);
+			file_put_contents("cache/slowqueue-".md5($_POST['blog']).".txt", $herd);
 
 			if(defined("DEBUG")){
-				echo '<p>dbg: herd key: ' . $herd . '</p>';
+				echo '<p>dbg: herd key: ' . $herd . ' fb '.$_POST['blog'].'</p>';
 			}
 		}
 
