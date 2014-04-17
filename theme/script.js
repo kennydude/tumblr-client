@@ -68,4 +68,23 @@ $(document).ready(function(){
 			}
 		}
 	});
+	$(".post-body").each(function(){
+		var t = $(this).text().toLowerCase();
+		for(var word in banned){
+			word = banned[word];
+			if(t.indexOf(word) != -1){
+				var post = $(this).closest(".post");
+				post.addClass("banned panel-danger hidden");
+				var t = "";
+				if($(".post-tags", post).html() != ""){
+					t = "Tagged: " + $(".post-tags", post).html();
+				}
+				var p = $("<p>").addClass("bg-danger pad10").text("Post hidden because it contains banned word '" + word + "'" + t).insertBefore(post);
+				$("<a>").addClass("btn btn-xs btn-default pull-right").text("Show").click(function(){
+					$(post).toggleClass("hidden");
+				}).prependTo(p);
+				return;
+			}
+		}
+	});
 });

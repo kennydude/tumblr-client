@@ -1,5 +1,20 @@
 <?php
+
+$banned = array();
+function ban_word($word){
+	global $banned;
+	$banned[] = strtolower($word);
+}
+
 require 'config.php';
+if(!defined("OFFICIAL_API")){
+	define("OFFICIAL_API", false);
+}
+if(!defined("USE_CDN")){
+	define('USE_CDN', true);
+	
+}
+
 $client = new Tumblr\API\Client($consumerKey, $consumerSecret);
 $client->setToken($token, $tokenSecret);
 
@@ -46,6 +61,7 @@ function get_userinfo($cache = true){
 }
 
 function nocdn($in){
+	if(USE_CDN) return $in;
 	return preg_replace( "/[0-9]+\.media\.tumblr\.com\//", "media.tumblr.com/", $in);
 }
 

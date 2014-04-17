@@ -50,6 +50,9 @@
 							}
 							?>
 							<li role="presentation" class="divider"></li>
+							<li role="presentation">
+								<a role="menuitem" href="index.php?show=likes" tabindex="-1">Likes</a>
+							</li>
 						</ul>
 					</div>
 				</div>

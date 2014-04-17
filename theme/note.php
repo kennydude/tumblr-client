@@ -48,6 +48,10 @@ if(!$note->blog_name){ // We know it's a notification
 				break;
 		}
 
+		if($note->timestamp){
+			echo ' <span class="timeago" data-timestamp="'.$note->timestamp.'">... ago</span>';
+		}
+
 		if($note->type == "reply"){
 			echo '<blockquote class="m10top">'.$note->reply_text.'</blockquote>';
 		}

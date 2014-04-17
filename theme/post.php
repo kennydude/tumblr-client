@@ -108,7 +108,7 @@ if(in_array($post->blog_name, $myblogs)){
 			</div>
 		</div>
 	</div>
-	<div class="panel-body body-<?php echo $post->type; ?>">
+	<div class="panel-body body-<?php echo $post->type; ?> post-body">
 		<?php
 			$no_body = false;
 
@@ -220,9 +220,11 @@ if(in_array($post->blog_name, $myblogs)){
 					if($post->note_count > 0){
 						echo '<a href="' . $post_url . '">' . $post->note_count . ' notes</a> ';
 					}
+					echo '<span class="post-body post-tags">';
 					foreach($post->tags as $tag){
 						echo '<a href="?tagged='.urlencode($tag).'">#' . $tag . '</a> ';
 					}
+					echo '</span>';
 				?>
 			</div>
 			<div class="col-xs-4 post-options">

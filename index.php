@@ -22,12 +22,19 @@ if($_GET['type']){
 	$ex .= "&type=" . $_GET['type'];
 }
 
-if($_GET['tagged']){
+if($_GET['show'] == "likes"){
+	$dashboard = $client->getLikedPosts($opts);
+	$dashboard = $dashboard->liked_posts;
+	$title = 'liked posts';
+	$ex .= "&show=likes";
+} else if($_GET['tagged']){
 	$dashboard = $client->getTaggedPosts($_GET['tagged'], $opts);
 	$ex .= "&tagged=" . $_GET['tagged'];
+	$title = 'global posts tagged ' . $_GET['tagged'];
 } else{
 	$dashboard = $client->getDashboardPosts($opts);
 	$dashboard = $dashboard->posts;
+	$title = 'dashboard';
 }
 
 require 'theme/header.php';
@@ -79,6 +86,8 @@ if($lastid){
 
 	if($_GET['tagged']){
 		$ex = 'before=' . $t . $ex;
+	} else if($_GET['show'] == "likes"){
+		$ex = 'offset=' . $i . $ex;
 	} else{
 		$ex = "max_id=" . $lastid . $ex;
 	}
