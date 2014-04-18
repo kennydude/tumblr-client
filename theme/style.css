@@ -27,7 +27,6 @@ div.fullwidth *{
 	color: #FFF;
 }
 .headerXTY23{
-	background: #428BCA;
 	color: #FFF;
 	font-size: 12px;
 	margin-bottom: 9px;
@@ -87,4 +86,7 @@ body .sp{
 .replyBox{
 	width: 200px;
 	height: 100px;
+}
+.dropdown{
+	display: inline;
 }

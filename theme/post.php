@@ -41,6 +41,7 @@ if($post->state == "submission" && ($post->type == "answer" || $post->type == "p
 $post_url = 'post.php?id='. $post->id . '&name=' . $post->blog_name;
 
 ?>
+<div class="post-container">
 <div class="panel <?php
 if(in_array($post->blog_name, $myblogs)){
 	echo 'panel-primary';
@@ -133,7 +134,14 @@ if(in_array($post->blog_name, $myblogs)){
 			} else if($post->photos){
 				// Photo Post
 				foreach($post->photos as $photo){
-					echo '<img class="fullwidth m10down" src="'.nocdn($photo->original_size->url).'" />';
+					$size = null; $large = 0;
+					foreach ($photo->alt_sizes as $x) {
+						if($large < $x->width){
+							$size = $x;
+							$large = $x->width;
+						}
+					}
+					echo '<img data-width="'.$size->width.'" data-height="'.$size->height.'" class="fullwidth m10down rsp" src="'.nocdn($size->url).'" data-highres="'.$post->original_size->url.'" />';
 				}
 			} else if($post->type == 'chat'){
 				$no_body = true;
@@ -171,10 +179,18 @@ if(in_array($post->blog_name, $myblogs)){
 				<div class="pad10"><?php echo $post->answer; ?></div>
 				<?php }
 			} else if($post->type == "audio"){
-				?>
-				<audio controls class="audio" preload="none">
-					<source type="audio/mp3" src="<?php echo $post->audio_url; ?>?plead=please-dont-download-this-or-our-lawyers-wont-let-us-host-audio" />
-				</audio>
+				if(is_string($post->audio_url) && stripos($post->audio_url, "http") !== false){
+					if(stripos($post->audio_url, "tumblr.com") !== false){
+						$post->audio_url = $post->audio_url . "?plead=please-dont-download-this-or-our-lawyers-wont-let-us-host-audio";
+					}
+					?>
+					<audio controls class="audio" preload="none">
+						<source type="audio/mp3" src="<?php echo $post->audio_url; ?>" />
+					</audio>
+					<?php
+				} else{
+					echo $post->embed;
+				} ?>
 				<p class="m10down"><small><span class="caret caret-reversed"></span> <?php
 					echo $post->track_name;
 					if($post->artist){
@@ -263,4 +279,5 @@ if(in_array($post->blog_name, $myblogs)){
 		</div>
 		<?php if(defined("DEBUG")){ ?><pre class="hidden postsource"><?php ob_start(); var_dump($post); $x = ob_get_contents(); ob_end_clean(); echo htmlspecialchars($x); ?></pre><?php } ?>
 	</div>
+</div>
 </div>

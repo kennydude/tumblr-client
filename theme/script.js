@@ -87,4 +87,17 @@ $(document).ready(function(){
 			}
 		}
 	});
+
+	$("img.rsp").each(function(){
+		var width = $(this).data("width");
+		var maxwidth = $(this).parent().width();
+		var height = $(this).data("height");
+
+		var ratio = maxwidth / width;
+		var newHeight = height * ratio;
+
+		$(this).css("height", newHeight + "px");
+	});
+
+	$(".post-container").keynav();
 });

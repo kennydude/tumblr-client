@@ -16,7 +16,7 @@
 	<style type="text/css">
 <?php if(!defined("NOHEADER")){ ?>
 .mainBody{
-	padding-top: 50px;
+	padding-top: 10px;
 }
 <?php } ?>
 	</style>
@@ -27,10 +27,7 @@
 	<div class="headerXTY23">
 		<div class="container">
 			<div class="row">
-				<div class="col-md-6 col-md-offset-3 c">
-					<a class="btn btn-xs btn-primary" href="index.php">tumblr client by @kennydude</a>
-				</div>
-				<div class="col-md-1">
+				<div class="col-md-offset-9 col-md-3">
 					<div class="dropdown">
 						<button class="btn btn-primary btn-xs dropdown-toggle" type="button" id="myMenu" data-toggle="dropdown">
 							<i class="glyphicon glyphicon-align-justify"></i>
@@ -55,6 +52,7 @@
 							</li>
 						</ul>
 					</div>
+					<a class="btn btn-xs btn-primary" href="index.php">tumblr client by @kennydude</a>
 				</div>
 			</div>
 		</div>
