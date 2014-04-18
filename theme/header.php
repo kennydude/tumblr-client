@@ -27,7 +27,7 @@
 	<div class="headerXTY23">
 		<div class="container">
 			<div class="row">
-				<div class="col-md-offset-9 col-md-3">
+				<div class="col-md-offset-9 col-md-3 box">
 					<div class="dropdown">
 						<button class="btn btn-primary btn-xs dropdown-toggle" type="button" id="myMenu" data-toggle="dropdown">
 							<i class="glyphicon glyphicon-align-justify"></i>

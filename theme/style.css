@@ -32,8 +32,10 @@ div.fullwidth *{
 	margin-bottom: 9px;
 	padding: 10px;
 	position: fixed;
-	z-index: 9;
 	top: 0; left: 0; right: 0;
+}
+.headerXTY23 .box{
+	z-index: 9;
 }
 .c{
 	text-align: center;
